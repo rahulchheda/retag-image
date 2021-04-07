@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: retag-image
+    name: retag-image
+  name: retag-image
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: retag-image
+  template:
+    metadata:
+      labels:
+        name: retag-image
+    spec:
+      serviceAccountName: retag-image-sa
+      containers:
+        - name: retag-image
+          image: pingtorahulchheda/retag-image:latest
+          command:
+          - retag-image
+          imagePullPolicy: IfNotPresent
