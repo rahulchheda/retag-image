@@ -34,6 +34,7 @@
 
 
 ### How to deploy:
+- Clone this repository, and switch to the latest release branch (i.e `2.0.0`)
 - Please ensure you are at the root of the project.
 - Replace the backup docker repository in `./deploy/deployment.yaml` ENV variables before applying.
 - Execure this command to deploy the controller deployment, and RBAC related k8s resources in deploy folder. `kubectl apply -f ./deploy`

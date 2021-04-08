@@ -9,7 +9,7 @@ PACKAGES = $(shell go list ./... | grep -v '/vendor/')
 # docker info
 DOCKER_REPO ?= pingtorahulchheda
 DOCKER_IMAGE ?= retag-image
-DOCKER_TAG ?= 1.0.0-dev
+DOCKER_TAG ?= 2.0.0-dev
 
 .PHONY: all
 all: deps format lint build test dockerops dockerops-amd64
