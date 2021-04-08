@@ -241,7 +241,8 @@ func (c *Controller) bussinessLogic(obj interface{}) {
 		log().Error("unable to GET k8s resource",
 			zap.String("name", resourceInfo.Name),
 			zap.String("namespace", resourceInfo.Namespace),
-			zap.String("type", resourceInfo.ResourceType))
+			zap.String("type", resourceInfo.ResourceType),
+			zap.Error(err))
 		return
 	}
 

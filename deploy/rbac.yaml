@@ -17,7 +17,7 @@ metadata:
 rules:
 - apiGroups: ["apps"]
   resources: ["deployments","daemonsets"]
-  verbs: ["list","watch","patch"]
+  verbs: ["get","list","watch","patch"]
 - apiGroups: [""]
   resources: ["events"]
   verbs: ["create", "patch", "update"]
