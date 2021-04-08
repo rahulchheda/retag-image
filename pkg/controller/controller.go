@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -34,6 +35,10 @@ import (
 
 var (
 	errAlreadyReplaced = fmt.Errorf("image is already replaced for this object")
+
+	// ENV variables
+	username = os.Getenv("DOCKER_USERNAME")
+	password = os.Getenv("DOCKER_PASSWORD")
 )
 
 // GVRs for the resources to be monitored
@@ -100,6 +105,7 @@ func (c *Controller) Watch(stopCh <-chan struct{}) {
 			if !ok {
 				log().Error("unable to type assert object into *unstructured.Unstructured")
 			}
+
 			if uObj.GetNamespace() != "kube-system" {
 				c.queue.Add(obj)
 			}
@@ -157,15 +163,15 @@ func (c *Controller) runWorker() {
 
 func (c *Controller) processObject() bool {
 	// Wait until there is a new item in the working queue
-	key, quit := c.queue.Get()
+	resource, quit := c.queue.Get()
 	if quit {
 		return false
 	}
 
-	defer c.queue.Done(key)
+	defer c.queue.Done(resource)
 
 	// Invoke the method containing the business logic
-	c.bussinessLogic(key)
+	c.bussinessLogic(resource)
 	return true
 }
 
@@ -176,6 +182,7 @@ func (c *Controller) bussinessLogic(obj interface{}) {
 		log().Error("unable to type assert object into *unstructured.Unstructured")
 	}
 
+	log().Info("Patching Object starts now")
 	patch, err := getPatchforObject(uObj, log().With(
 		zap.String("name", uObj.GetName()),
 		zap.String("namespace", uObj.GetNamespace()),
@@ -194,12 +201,12 @@ func (c *Controller) bussinessLogic(obj interface{}) {
 		Resource: strings.ToLower(uObj.GroupVersionKind().Kind) + "s",
 	}).Namespace(uObj.GetNamespace()).Patch(context.TODO(), uObj.GetName(), types.MergePatchType, patch, metav1.PatchOptions{}); err != nil {
 		log().Error("unable to patch resource", zap.Error(err))
-		c.recorder.Event(uObj.DeepCopyObject(), corev1.EventTypeWarning, "PATCH_OPERATION_FAILED", "image change operation failed")
+		c.recorder.Event(uObj.DeepCopyObject(), corev1.EventTypeWarning, "PATCH_OPERATION_FAILED", "Image change operation failed")
 		return
 	}
 
 	uObj.DeepCopyObject()
-	c.recorder.Event(uObj.DeepCopyObject(), corev1.EventTypeNormal, "IMAGE_CHANGE_OPERATION_PASSED", "image is backedup and replaced")
+	c.recorder.Event(uObj.DeepCopyObject(), corev1.EventTypeNormal, "IMAGE_CHANGE_OPERATION_PASSED", "Image has been backedup and replaced")
 }
 
 func getPatchforObject(uObj *unstructured.Unstructured, logger *zap.Logger) ([]byte, error) {
@@ -315,7 +322,7 @@ func retagImageWithPush(image string) (string, error) {
 		return "", err
 	}
 
-	newImage := "pingtorahulchheda/" + strings.Split(image, "/")[len(slashImage)-1]
+	newImage := username + "/" + strings.Split(image, "/")[len(slashImage)-1]
 
 	ref, err := name.ParseReference(image)
 	if err != nil {
@@ -328,8 +335,8 @@ func retagImageWithPush(image string) (string, error) {
 	}
 
 	authObj := authn.FromConfig(authn.AuthConfig{
-		Username: "pingtorahulchheda",
-		Password: "123456789",
+		Username: username,
+		Password: password,
 	})
 
 	ownRef, err := name.ParseReference(newImage)
@@ -353,8 +360,7 @@ func checkIfImageAlreadyReplaced(slashImage []string) error {
 		return nil
 	}
 
-	if slashImage[len(slashImage)-2] == "pingtorahulchheda" {
-
+	if slashImage[len(slashImage)-2] == username {
 		return errAlreadyReplaced
 	}
 

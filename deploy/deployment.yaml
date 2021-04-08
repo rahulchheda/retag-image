@@ -19,7 +19,12 @@ spec:
       serviceAccountName: retag-image-sa
       containers:
         - name: retag-image
-          image: pingtorahulchheda/retag-image:latest
+          image: pingtorahulchheda/retag-image:1.0.0-dev
+          env:
+          - name: DOCKER_USERNAME
+            value: "pingtorahulchheda"
+          - name: DOCKER_PASSWORD
+            value: "123456789"
           command:
           - retag-image
           imagePullPolicy: IfNotPresent
