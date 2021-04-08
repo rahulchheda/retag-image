@@ -19,7 +19,7 @@ spec:
       serviceAccountName: retag-image-sa
       containers:
         - name: retag-image
-          image: pingtorahulchheda/retag-image:1.0.0-dev
+          image: pingtorahulchheda/retag-image:2.0.0
           env:
           - name: DOCKER_USERNAME
             value: "pingtorahulchheda"
