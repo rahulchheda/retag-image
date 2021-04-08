@@ -1,8 +1,8 @@
 # RETAG-IMAGE CONTROLLER
 
 ### Description
-- This is Greenfield Project with a barebone kubernetes custom controller which retag the existing images available in cluster.
-- Pushes it to a backup repository (provided as ENV variable).
+- This is Greenfield Project with a barebone kubernetes custom controller which retag the existing images available in cluster in deployments and daemonsets.
+- Pushes it to a backup repository (provided as ENV variables to the controller's deployment).
 - And changes the images in Deployments and Daemonsets using them.
 
 
