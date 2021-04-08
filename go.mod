@@ -12,7 +12,6 @@ require (
 	github.com/imdario/mergo v0.3.10 // indirect
 	github.com/onsi/ginkgo v1.14.1 // indirect
 	github.com/onsi/gomega v1.10.2 // indirect
-	github.com/sirupsen/logrus v1.6.0
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
@@ -27,8 +26,7 @@ require (
 	k8s.io/apimachinery v0.20.5
 	k8s.io/client-go v0.20.5
 	k8s.io/klog v1.0.0
-	k8s.io/klog/v2 v2.8.0
-	k8s.io/sample-controller v0.20.5
+	k8s.io/klog/v2 v2.8.0 // indirect
 	k8s.io/utils v0.0.0-20210305010621-2afb4311ab10 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.1 // indirect
 )
